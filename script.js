@@ -1,95 +1,103 @@
-// OpenCV読み込み完了を待つ
+// OpenCV読み込み完了
 cv['onRuntimeInitialized'] = () => {
-  document.getElementById("log").innerText = "OpenCV 読み込み完了！\n画像をアップロードしてください。";
+    document.getElementById("log").innerText = "OpenCV 読み込み完了！";
 };
 
-// 登録画像とURLの対応（相対パスに修正）
-const registered = [
-  { file: "467fb527f08f855790a971ca6762d269c19b7451-thumb-1200xauto-12974.jpg", url: "https://sites.google.com/ad.reitaku-u.ac.jp/gakusei-jyouhou/%E3%83%9B%E3%83%BC%E3%83%A0?" },
-  { file: "WIN_20260611_03_09_54_Pro.jpg", url: "https://weakcat0904.github.io/testgame_b/test.html" }
-];
-
-// ログ表示
-function log(msg) {
-  document.getElementById("log").innerText += msg + "\n";
-}
-
-// 画像読み込み
-function loadImage(src) {
-  return new Promise(resolve => {
-    let img = new Image();
-    img.onload = () => resolve(img);
-    img.src = src;
-  });
-}
-
-// ORB特徴量抽出
-function getDescriptors(img) {
-  let mat = cv.imread(img);
-  cv.cvtColor(mat, mat, cv.COLOR_RGBA2GRAY);
-
-  let orb = new cv.ORB();
-  let keypoints = new cv.KeyPointVector();
-  let descriptors = new cv.Mat();
-
-  orb.detectAndCompute(mat, new cv.Mat(), keypoints, descriptors);
-
-  mat.delete();
-  orb.delete();
-
-  return descriptors;
-}
-
-// 類似度計算（マッチ数）
-function matchDescriptors(desc1, desc2) {
-  let bf = new cv.BFMatcher(cv.NORM_HAMMING, true);
-  let matches = new cv.DMatchVector();
-
-  bf.match(desc1, desc2, matches);
-
-  let score = matches.size();
-  bf.delete();
-  matches.delete();
-
-  return score;
-}
-
-// メイン処理
 document.getElementById("inputImage").addEventListener("change", async (e) => {
-  document.getElementById("log").innerText = "";
-  log("① 画像を読み込み中...");
+    document.getElementById("log").innerText = "認識中...";
 
-  let file = e.target.files[0];
-  let userImg = await loadImage(URL.createObjectURL(file));
+    // アップロード画像
+    const file = e.target.files[0];
+    const userImg = await loadImage(URL.createObjectURL(file));
+    const userDesc = getDescriptors(userImg);
 
-  log("② 特徴量を抽出中...");
-  let userDesc = getDescriptors(userImg);
+    // ★ 比較対象（画像＋URL＋しきい値）
+    const targets = [
+        { img: "467fb527f08f855790a971ca6762d269c19b7451-thumb-1200xauto-12974.jpg", url: "https://www.reitaku-u.ac.jp/", threshold: 120 },
+        { img: "OIP.jpg", url: "https://rp.reitaku-u.ac.jp/uprx/up/bs/bsd007/Bsd00701.xhtml", threshold: 120 },
+        { img: "hiiragi.jpg", url: "https://cite.reitaku-u.ac.jp/", threshold: 120 }
+    ];
 
-  let bestScore = 0;
-  let bestURL = null;
+    let bestScore = 0;
+    let bestURL = null;
+    let log = "";
 
-  log("③ 登録画像と比較中...");
+    // ★ 画像を順番に比較（読み込み失敗しても止まらない）
+    for (const t of targets) {
+        try {
+            const targetImg = await loadImage(t.img);
+            const targetDesc = getDescriptors(targetImg);
 
-  for (let item of registered) {
-    log(`　→ ${item.file} と比較中...`);
-    let regImg = await loadImage(item.file);
-    let regDesc = getDescriptors(regImg);
+            const score = matchDescriptors(userDesc, targetDesc);
 
-    let score = matchDescriptors(userDesc, regDesc);
-    log(`　　マッチ数: ${score}`);
+            log += `${t.img} のマッチ数: ${score}\n`;
+            document.getElementById("log").innerText = log;
 
-    if (score > bestScore) {
-      bestScore = score;
-      bestURL = item.url;
+            // ★ しきい値判定
+            if (score >= t.threshold && score > bestScore) {
+                bestScore = score;
+                bestURL = t.url;
+            }
+
+        } catch (err) {
+            log += `${t.img} の読み込みに失敗しました\n`;
+            document.getElementById("log").innerText = log;
+        }
     }
-  }
 
-  log("④ 判定中...");
-
-  if (bestScore > 10) {  // 閾値を下げて認識しやすく
-    log(`⑤ 一致！URLへ移動します → ${bestURL}`);
-    window.location.href = bestURL;
-  } else {
-    log("⑤ 一致する画像が見つかりませんでした");
-  }
+    // ★ URLジャンプ
+    if (bestURL) {
+        window.location.href = bestURL;
+    } else {
+        document.getElementById("log").innerText += "\n一致する画像がありませんでした";
+    }
 });
+
+
+// ------------------------
+// 画像読み込み
+// ------------------------
+function loadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject("画像読み込み失敗: " + src);
+        img.src = src;
+    });
+}
+
+// ------------------------
+// ORB特徴量抽出
+// ------------------------
+function getDescriptors(img) {
+    const mat = cv.imread(img);
+    cv.cvtColor(mat, mat, cv.COLOR_RGBA2GRAY);
+
+    const orb = new cv.ORB();
+    const keypoints = new cv.KeyPointVector();
+    const descriptors = new cv.Mat();
+
+    orb.detectAndCompute(mat, new cv.Mat(), keypoints, descriptors);
+
+    mat.delete();
+    orb.delete();
+
+    return descriptors;
+}
+
+// ------------------------
+// 類似度計算（マッチ数）
+// ------------------------
+function matchDescriptors(desc1, desc2) {
+    const bf = new cv.BFMatcher(cv.NORM_HAMMING, true);
+    const matches = new cv.DMatchVector();
+
+    bf.match(desc1, desc2, matches);
+
+    const score = matches.size();
+
+    bf.delete();
+    matches.delete();
+
+    return score;
+}
