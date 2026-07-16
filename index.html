@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>画像認識でURLへ飛ぶ</title>
-  <script src="https://docs.opencv.org/4.5.5/opencv.js"></script>
+
+  <!-- ★ 安定版 OpenCV.js（必須） -->
+  <script src="https://rawcdn.githack.com/opencv/opencv/4.5.5/build_js/opencv.js"></script>
+
+
   <style>
     body { font-family: sans-serif; padding: 20px; }
     #log { margin-top: 20px; white-space: pre-line; }
@@ -11,9 +15,8 @@
 </head>
 <body>
 
-<h2>カメラで撮影してください</h2>
+<h2>写真を撮影してください</h2>
 
-<!-- ★ ここが重要：スマホカメラを直接起動する -->
 <input type="file" id="inputImage" accept="image/*" capture="environment">
 
 <div id="log"></div>
@@ -21,3 +24,4 @@
 <script src="script.js"></script>
 </body>
 </html>
+
