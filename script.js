@@ -6,7 +6,7 @@ cv['onRuntimeInitialized'] = () => {
 // 登録画像とURLの対応（相対パスに修正）
 const registered = [
   { file: "467fb527f08f855790a971ca6762d269c19b7451-thumb-1200xauto-12974.jpg", url: "https://sites.google.com/ad.reitaku-u.ac.jp/gakusei-jyouhou/%E3%83%9B%E3%83%BC%E3%83%A0?" },
-  { file: "registered/WIN_20260611_03_09_54_Pro.jpg", url: "https://weakcat0904.github.io/testgame_b/test.html" }
+  { file: "WIN_20260611_03_09_54_Pro.jpg", url: "https://weakcat0904.github.io/testgame_b/test.html" }
 ];
 
 // ログ表示
