@@ -4,23 +4,76 @@
   <meta charset="UTF-8">
   <title>画像認識でURLへ飛ぶ</title>
 
-  <!-- ★ GitHub Pagesで確実に読み込める：自分のリポジトリ内の opencv.js -->
+  <!-- OpenCV.js -->
   <script src="opencv.js"></script>
 
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    #log { margin-top: 20px; white-space: pre-line; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #1e1e2f, #3a3a5a);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 480px;
+      padding: 30px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      font-size: 1.6em;
+      letter-spacing: 1px;
+    }
+
+    #inputImage {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: #ffffff15;
+      border: 2px dashed #ffffff40;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #inputImage:hover {
+      background: #ffffff25;
+      border-color: #ffffff70;
+    }
+
+    #log {
+      margin-top: 25px;
+      padding: 15px;
+      background: #00000030;
+      border-radius: 10px;
+      font-size: 0.9em;
+      text-align: left;
+      white-space: pre-line;
+    }
   </style>
 </head>
 <body>
 
-<h2>写真を撮影してください</h2>
+<div class="container">
+  <h2>写真を撮影してください</h2>
 
-<input type="file" id="inputImage" accept="image/*" capture="environment">
+  <input type="file" id="inputImage" accept="image/*" capture="environment">
 
-<div id="log"></div>
+  <div id="log"></div>
+</div>
 
 <script src="script.js"></script>
 </body>
 </html>
-
