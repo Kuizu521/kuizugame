@@ -14,8 +14,8 @@ document.getElementById("inputImage").addEventListener("change", async (e) => {
     // ★ 比較対象（画像＋URL＋しきい値）
     const targets = [
         { img: "467fb527f08f855790a971ca6762d269c19b7451-thumb-1200xauto-12974.jpg", url: "https://www.reitaku-u.ac.jp/", threshold: 120 },
-        { img: "OIP.jpg", url: "https://rp.reitaku-u.ac.jp/uprx/up/bs/bsd007/Bsd00701.xhtml", threshold: 120 },
-        { img: "hiiragi.jpg", url: "https://cite.reitaku-u.ac.jp/", threshold: 120 }
+        { img: "OIP.jpeg", url: "https://rp.reitaku-u.ac.jp/uprx/up/bs/bsd007/Bsd00701.xhtml", threshold: 120 },
+        { img: "hiiragi.jpeg", url: "https://cite.reitaku-u.ac.jp/", threshold: 120 }
     ];
 
     let bestScore = 0;
