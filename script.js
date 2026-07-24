@@ -11,10 +11,11 @@ document.getElementById("inputImage").addEventListener("change", async (e) => {
 
     // ★ 固定しきい値方式
     const targets = [
-        { img: "target1.jpg", url: "https://example.com/page1", threshold: 120 },
-        { img: "target2.jpg", url: "https://example.com/page2", threshold: 120 },
-        { img: "target3.jpg", url: "https://example.com/page3", threshold: 120 }
+        { img: "467fb527f08f855790a971ca6762d269c19b7451-thumb-1200xauto-12974.jpg", url: "https://www.reitaku-u.ac.jp/", threshold: 120 },
+        { img: "OIP.jpg", url: "https://rp.reitaku-u.ac.jp/uprx/up/bs/bsd007/Bsd00701.xhtml", threshold: 120 },
+        { img: "hiiragi.jpg", url: "https://cite.reitaku-u.ac.jp/", threshold: 120 }
     ];
+
 
     let log = "";
     let bestScore = 0;
